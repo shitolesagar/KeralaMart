@@ -1,0 +1,84 @@
+﻿@{
+    ViewData["Title"] = "Notifications";
+    string stringHtml = "<span class=\"display-inline\">Notifications</span>";
+    string AddButton = string.Format("<span class=\"nav-item\"><a class=\"btn nav-link btn-primary m-r-20 add-icon\" href=\"/notification/add\"  ><span class=\"addIcon-txt\">Add New Notification</span><img src=\"/images/icons/Plus.png\" /> </a></span>");
+    string seachButton = "<input class=\"form-control\" id=\"txtSearch\" type=\"text\" placeholder=\"Search\" /><img src=\"/images/icons/search.png\" class=\"search-icon\" />";
+
+    ViewData["TabButton"] = AddButton;
+    ViewData["TabHeading"] = stringHtml;
+    ViewData["ActiveTab"] = "notification";
+    ViewData["TabSearch"] = seachButton;
+
+    var message = TempData["Message"] ?? string.Empty;
+}
+
+<div class="row mb-3" id="filterRow" style="display:none">
+    <div class="col-lg-4 col-sm-4">
+        <div class="form-group  position-relative">
+            <span class="f-bold display-inline f-18 dropDownLabel-mob">Notification Type:</span>
+            <div class="my-custom-select">
+                <select onchange="filter(this)" class="form-control select-dropDown" id="ddlType">
+                    <option value="">select</option>
+                    <option value="Text">Text</option>
+                    <option value="Image">Image</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Component.InvokeAsync("Notification", new { isPartial = false, filter = ViewBag.Filters })
+
+
+<partial name="_deletePopup" />
+
+@section Scripts{
+    <script>
+        var message = "@message";
+        if (message) {
+            ShowSlackbarSucessMessage(message);
+        }
+        $(document).ready(function () {
+            $("#txtSearch").keyup(onSearch);
+        });
+
+        function onSearch() {
+            $("#ddlType").val('');
+            ajaxCall(CreateUrlString());
+        }
+
+        function getRecordsByPageIndex(pageIndex) {
+            var url = CreateUrlString() + "pageIndex=" + pageIndex + "&";
+            ajaxCall(url)
+        }
+
+        function CreateUrlString() {
+            var url = "/notification/indexpartial?";
+            var filter = $("#ddlType").val();
+            var search = $("#txtSearch").val();
+
+            if (filter !== "")
+                url = url + "Type=" + encodeURIComponent(filter) + "&";
+
+            if (search !== "")
+                url = url + "search=" + encodeURIComponent(search) + "&";
+
+            return url;
+        }
+
+        function filter(obj) {
+            ajaxCall(CreateUrlString());
+        }
+
+        function ajaxCall(url) {
+            $(".loader-wrapper").show();
+            $.get(url, function (data) {
+                $(".loader-wrapper").hide();
+                $("#indexPartialContent").replaceWith(data);
+            });
+        }
+
+        // this is called form main method to hide or show filters
+        showHideFilters("filterRow");
+    </script>
+}

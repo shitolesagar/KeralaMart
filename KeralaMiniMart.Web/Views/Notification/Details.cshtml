@@ -1,0 +1,73 @@
+﻿@model KeralaMiniMart.Entities.WebViewModels.NotificationDetailsViewModel
+@{
+    ViewData["Title"] = "Notification Details";
+    string stringHtml = "<a href=\"/notification\"><img src=\"/images/icons/arrow-left.png\" class=\"vertical-middle iconWidth-25 cursor-pointer m-r-20\"></a>";
+    stringHtml = stringHtml + "<span class=\"display-inline\">Notification Details</span>";
+    ViewData["TabHeading"] = stringHtml;
+    ViewData["ActiveTab"] = "notification";
+
+    var message = TempData["Message"] ?? string.Empty;
+
+}
+
+<div class="row">
+    <div class="col-6 detail-container">
+        <div class="pull-left">
+            <p class="f-gray">Title</p>
+            <p class="">@Model.Title</p>
+        </div>
+        <div class="pull-right">
+            <span class="display-inline m-r-25 f-bold cursor-pointer"><a class="f-black" asp-controller="notification" asp-action="edit" asp-route-id="@Model.Id"><img src="~/images/icons/edit.png" class="img-responsive action-icon" />Resend</a></span>
+            <span onclick="OpenDeleteConfirmBox('@Model.Id')" class="display-inline f-bold cursor-pointer"><img src="~/images/icons/trash.png" class="img-responsive action-icon" />Remove</span>
+        </div>
+        <div class="clearfix"></div>
+
+
+
+        <p class="f-gray mt-3">Notification Type</p>
+        <p class="">@Model.NotificationType</p>
+
+        @if (Model.NotificationType == "Text")
+        {
+            <p class="f-gray mt-3">Message</p>
+            <p class="">@Model.Message</p>
+        }
+        else
+        {
+            <img src="@Model.ImageUrl" class="img-responsive add-banner-img display-inline mt-4" />
+        }
+        <p class="f-gray mt-3">Category</p>
+        <p class="">@Model.Category</p>
+        @*<label class="float-label">Delivery locations</label>*@
+        <p class="f-gray mt-3">Delivery locations</p>
+        @if (Model.SelectedAreas.Count > 0)
+        {
+            <ul class="ml-4">
+                @foreach (var item in Model.SelectedAreas)
+                {
+                    <li>@item</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>NA</p>
+        }
+        <p class="f-gray mt-3">Sent On</p>
+        <p class="">@Model.AddedDate</p>
+    </div>
+</div>
+
+<partial name="_deletePopup" />
+
+
+@section Scripts {
+    <script>
+        var message = "@message";
+        if (message) {
+            ShowSlackbarSucessMessage(message);
+        }
+
+    </script>
+}
+

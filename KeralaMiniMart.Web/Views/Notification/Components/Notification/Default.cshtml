@@ -1,0 +1,56 @@
+﻿@model KeralaMiniMart.Entities.WebViewModels.NotificationWrapperViewModel
+
+<div id="indexPartialContent" class="table-wrapper">
+    @if (Model.TotalCount <= 0)
+    {
+        <div class="list-empty-state">
+            @if (ViewBag.ShowEmptyState == true)
+            {
+                <a asp-action="add" asp-controller="notification" class="btn btn-primary mr-4 add-icon"> Add New Notification <img src="/images/icons/Plus.png"></a>
+                <p class="mt-4 f-22 f-bold">
+                    Start sending notification.
+                </p>
+                <p class="f-gray mt-2 f-14">Click on "Add New Notification" button to send new notificaiton.</p>
+            }
+            else
+            {
+                <p class="mt-4 f-22 f-bold">
+                    No Result Found!
+                </p>
+                <p class="f-gray m-t-10 f-14">We couldn't find the item you were looking for. Please try again.</p>
+            }
+        </div>
+    }
+    else
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th width="20%">Sr. no.</th>
+                    <th width="20%">Title</th>
+                    <th width="20%">Type</th>
+                    <th width="20%">Sent Date </th>
+                    <th width="20%" class="text-center">Manage</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var notificaiton in Model.NotificationList)
+                {
+                    <tr onclick="redirectToDetails('/notification/details/@notificaiton.Id')">
+                        <td>@notificaiton.Number</td>
+                        <td>@notificaiton.Title</td>
+                        <td>@notificaiton.NotificationType</td>
+                        <td>@notificaiton.SentDate</td>
+                        <td class="text-center">
+                            <span title="Edit" onclick="redirectToEdit('/notification/edit/@notificaiton.Id')"><i class="fa fa-pencil f-16" aria-hidden="true"></i></span>
+                            <span title="Remove" class="cursor-pointer" onclick="OpenDeleteConfirmBox('@notificaiton.Id')"><i class="fa fa-trash ml-3" aria-hidden="true"></i></span>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+        <!--Pagination-->
+        <partial name="_pagination" model="Model.PagingData" />
+    }
+</div>

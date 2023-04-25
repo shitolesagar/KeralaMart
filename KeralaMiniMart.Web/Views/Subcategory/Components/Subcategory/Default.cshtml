@@ -1,0 +1,56 @@
+﻿@model KeralaMiniMart.Entities.WebViewModels.SubcategoryWrapperViewModel
+
+<div id="indexPartialContent">
+    @if (Model.TotalCount <= 0)
+    {
+        <div class="list-empty-state">
+            @if (ViewBag.ShowEmptyState == true)
+            {
+                <a asp-action="add" asp-controller="Subcategory" class="btn btn-primary mr-4 add-icon"> Add New Subcategory <img src="/images/icons/Plus.png"></a>
+                <p class="mt-4 f-22 f-bold">
+                    Start adding subcategories for product categories
+                </p>
+                <p class="f-gray mt-2 f-14">Click on "Add New Subcategory" button to add Subcategory for product categories.</p>
+            }
+            else
+            {
+                @*<img src="~/images/search@2x.png" alt="Sorry" />*@
+                <p class="m-t-25 f-22 f-bold">
+                    No Result Found!
+                </p>
+                <p class="f-gray m-t-10 f-14">We couldn't find the item you were looking for. Please try again.</p>
+            }
+        </div>
+    }
+    else
+    {
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Sr. no.</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th class="text-center">Manage</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var subcategory in Model.SubcateogryList)
+                {
+                    <tr onclick="redirectToDetails('/subcategory/details/@subcategory.Id')">
+                        <td>@subcategory.Number</td>
+                        <td>@subcategory.Name</td>
+                        <td>@subcategory.Category</td>
+                        <td class="text-center">
+                            <span title="Edit" class="cursor-pointer" onclick="redirectToEdit('/subcategory/edit/@subcategory.Id')"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                            <span title="Remove" class="cursor-pointer" onclick="OpenDeleteConfirmBox('@subcategory.Id')"><i class="fa fa-trash ml-3" aria-hidden="true"></i></span>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+        <!--Pagination-->
+        <partial name="_pagination" model="Model.PagingData" />
+    }
+</div>

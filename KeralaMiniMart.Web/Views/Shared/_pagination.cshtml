@@ -1,0 +1,6 @@
+﻿@model KeralaMiniMart.Entities.WebViewModels.PagingData
+<div class="pagination align-items-center">
+    <button onclick="getRecordsByPageIndex(@(Model.CurrentIndex-1))" @(Model.IsFirst ? "disabled" : "")><img src="~/images/icons/left.png" /></button>
+    <button class="ml-2" onclick="getRecordsByPageIndex(@(Model.CurrentIndex+1))" @(Model.IsLast ? "disabled" : "")><img src="/images/icons/right.png" /></button>
+    <span class="mx-4">Viewing <span class="f-semi-bold">@Model.FromRecord - @Model.UpToRecord</span> of <span class="f-semi-bold">@Model.TotalCount</span></span>
+</div>

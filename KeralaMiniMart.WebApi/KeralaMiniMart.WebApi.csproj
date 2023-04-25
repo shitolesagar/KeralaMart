@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KeralaMiniMart.Abstraction\KeralaMiniMart.Abstraction.csproj" />
+    <ProjectReference Include="..\KeralaMiniMart.Entities\KeralaMiniMart.Entities.csproj" />
+    <ProjectReference Include="..\KeralaMiniMart.Repository\KeralaMiniMart.Repository.csproj" />
+    <ProjectReference Include="..\KeralaMiniMart.Service\KeralaMiniMart.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\images\users\" />
+  </ItemGroup>
+
+</Project>

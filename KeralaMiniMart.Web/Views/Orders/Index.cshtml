@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = "Orders";
+    string stringHtml = "<span class=\"display-inline\">Orders</span>";
+    string seachButton = "<input class=\"form-control\" id=\"txtSearch\" type=\"text\" placeholder=\"Search\" /><img src=\"/images/icons/search.png\" class=\"search-icon\" />";
+
+    ViewData["TabHeading"] = stringHtml;
+    ViewData["ActiveTab"] = "order";
+    ViewData["TabSearch"] = seachButton;
+    var message = TempData["Message"] ?? string.Empty;
+}
+
+<div class="row" id="filterRow" style="display:none">
+    <div class="col-lg-4 col-sm-4">
+        <div class="form-group  position-relative">
+            <span class="f-bold display-inline f-18 dropDownLabel-mob">Delivery status:</span>
+            <div class="my-custom-select">
+                <select onchange="filter(this)" class="form-control select-dropDown" id="ddlStatus" asp-items="ViewBag.DeliveryStatusList">
+                    <option value="">select</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-sm-4">
+        <div class="form-group  position-relative">
+            <span class="f-bold display-inline f-18 dropDownLabel-mob">Delivery Day:</span>
+            <div class="my-custom-select">
+                <select onchange="filter(this)" class="form-control select-dropDown" id="ddlDay" asp-items="ViewBag.WeekDays">
+                    <option value="">select</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@await Component.InvokeAsync("Order", new { isPartial = false, filter = ViewBag.Filters })
+
+
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script>
+        var message = "@message";
+        if (message) {
+            ShowSlackbarSucessMessage(message);
+        }
+        $(document).ready(function () {
+            $("#txtSearch").keyup(onSearch);
+        });
+
+        function getRecordsByPageIndex(pageIndex) {
+            var url = CreateUrlString() + "pageIndex=" + pageIndex + "&";
+            ajaxCall(url);
+        }
+
+        function filter(obj) {
+            $('.selectpicker').selectpicker('refresh');
+            ajaxCall(CreateUrlString())
+        }
+
+        function onSearch() {
+            $("#ddlStatus").val('');
+            $("#ddlDay").val('');
+            ajaxCall(CreateUrlString());
+        }
+
+        function CreateUrlString() {
+            var url = "/orders/indexpartial?";
+            var filter = {
+                status: $("#ddlStatus").val(),
+                search: $("#txtSearch").val(),
+                deliveryday: $("#ddlDay").val()
+            };
+            if (filter.status !== "")
+                url = url + "StatusId=" + encodeURIComponent(filter.status) + "&";
+
+            if (filter.search !== "")
+                url = url + "search=" + encodeURIComponent(filter.search) + "&";
+
+            if (filter.deliveryday !== "")
+                url = url + "deliveryday=" + encodeURIComponent(filter.deliveryday) + "&";
+            return url;
+        }
+
+
+
+        function ajaxCall(url) {
+            $(".loader-wrapper").show();
+            $.get(url, function (data) {
+                $(".loader-wrapper").hide();
+                $("#indexPartialContent").replaceWith(data);
+            });
+        }
+
+
+        // this is called form main method to hide or show filters
+        showHideFilters("filterRow");
+    </script>
+
+}

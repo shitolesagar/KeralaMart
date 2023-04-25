@@ -1,0 +1,53 @@
+﻿@model KeralaMiniMart.Entities.WebViewModels.BannerWrapperViewModel
+
+<div id="indexPartialContent" class="table-wrapper">
+    @if (Model.TotalCount <= 0)
+    {
+        <div class="list-empty-state">
+            @if (ViewBag.ShowEmptyState == true)
+            {
+                <a asp-action="add" asp-controller="bannerads" class="btn btn-primary mr-4 add-icon"> Add New Banner <img src="/images/icons/Plus.png"></a>
+                <p class="mt-4 f-22 f-bold">
+                    Start adding advertisement banner.
+                </p>
+                <p class="f-gray mt-2 f-14">Click on "Add New Banner" button to add advertisement banner.</p>
+            }
+            else
+            {
+                <p class="m-t-25 f-22 f-bold">
+                    No Result Found!
+                </p>
+                <p class="f-gray m-t-10 f-14">We couldn't find the item you were looking for. Please try again.</p>
+            }
+        </div>
+    }
+    else
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th width="20%">Sr. no.</th>
+                    <th width="20%">Name</th>
+                    <th width="20%">Expired on</th>
+                    <th width="20%" class="text-center">Manage</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var banner in Model.BannerList)
+                {
+                    <tr onclick="redirectToDetails('/bannerads/details/@banner.Id')">
+                        <td>@banner.Number</td>
+                        <td>@banner.Caption</td>
+                        <td>@(banner.ExpireDate?? "NA")</td>
+                        <td class="text-center">
+                            <span title="Remove" class="cursor-pointer" onclick="redirectToEdit('/bannerads/edit/@banner.Id')"><i class="fa fa-pencil ml-3" aria-hidden="true"></i></span>
+                            <span title="Remove" class="cursor-pointer" onclick="OpenDeleteConfirmBox('@banner.Id')"><i class="fa fa-trash ml-3" aria-hidden="true"></i></span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <!--Pagination-->
+        <partial name="_pagination" model="Model.PagingData" />
+    }
+</div>

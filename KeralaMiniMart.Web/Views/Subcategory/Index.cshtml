@@ -1,0 +1,72 @@
+﻿@{
+    ViewData["Title"] = "Subcategories";
+    string stringHtml = "<span class=\"display-inline\">Subcategories</span>";
+    string AddButton = string.Format("<span class=\"nav-item\"><a class=\"btn nav-link btn-primary m-r-20 add-icon\" href=\"/subcategory/add\"  ><span class=\"addIcon-txt\">Add New Subcategory</span><img src=\"/images/icons/Plus.png\" /> </a></span>");
+
+    ViewData["TabButton"] = AddButton;
+    ViewData["TabHeading"] = stringHtml;
+    ViewData["ActiveTab"] = "subcategory";
+    var message = TempData["Message"] ?? string.Empty;
+}
+
+<div class="row" id="filterRow"  style="display:none">
+    <div class="col-lg-4 col-sm-4">
+        <div class="form-group  position-relative">
+            <span class="f-bold display-inline f-18 dropDownLabel-mob">Category:</span>
+            <div class="my-custom-select">
+                <select onchange="filter(this)" class="form-control select-dropDown" id="ddlCategory" asp-items="ViewBag.CategoriesList">
+                    <option value="">select</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Component.InvokeAsync("Subcategory", new { isPartial = false, filter = ViewBag.Filters })
+
+
+<partial name="_deletePopup" />
+@section Scripts{
+    <script>
+        var message = "@message";
+        if (message) {
+            ShowSlackbarSucessMessage(message);
+        }
+
+        function openModal(id) {
+            $('#myModal').modal('show');
+            $("#delete-id").val(id)
+        }
+
+        function getRecordsByPageIndex(pageIndex) {
+            var url = CreateUrlString() + "pageIndex=" + pageIndex + "&";
+            $(".loader-wrapper").show();
+            $.get(url, function (data) {
+                $("#indexPartialContent").replaceWith(data);
+                $(".loader-wrapper").hide();
+            });
+        }
+
+        function CreateUrlString() {
+            var url = "/subcategory/indexpartial?";
+            var category = $("#ddlCategory").val();
+            if (category !== "")
+                url = url + "CategoryId=" + encodeURIComponent(category) + "&";
+            return url;
+        }
+
+        function filter(obj) {
+            if (($("#indexPartialContent").text()).length > 0) {
+                $(".loader-wrapper").show();
+
+                $.get(CreateUrlString(), function (data) {
+                    $(".loader-wrapper").hide();
+                    $("#indexPartialContent").replaceWith(data);
+                });
+            }
+        }
+        // this is called form main method to hide or show filters
+        showHideFilters("filterRow");
+
+    </script>
+}

@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "All Customer";
+    string stringHtml = "<span class=\"display-inline\">Customers</span>";
+    string seachButton = "<input class=\"form-control\" id=\"txtSearch\" type=\"text\" placeholder=\"Search\" /><img src=\"/images/icons/search.png\" class=\"search-icon\" />";
+
+
+    ViewData["TabHeading"] = stringHtml;
+    ViewData["ActiveTab"] = "customer";
+    ViewData["TabSearch"] = seachButton;
+    var message = TempData["Message"] ?? string.Empty;
+}
+
+@await Component.InvokeAsync("Customer", new { isPartial = false, filter = ViewBag.Filters })
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#txtSearch").keyup(onSearch);
+        });
+        var message = "@message";
+        if (message) {
+            ShowSlackbarSucessMessage(message);
+        }
+
+        function openModal(id) {
+            $('#myModal').modal('show');
+            $("#delete-id").val(id)
+        }
+
+        function getRecordsByPageIndex(pageIndex) {
+            var url = CreateUrlString() + "pageIndex=" + pageIndex + "&";
+            ajaxCall(url);
+        }
+
+        function filter(obj) {
+            if (($("#indexPartialContent").text()).length > 0) {
+                ajaxCall(CreateUrlString());
+            }
+        }
+
+        function onSearch() {
+            ajaxCall(CreateUrlString());
+        }
+
+        function CreateUrlString() {
+            var search = $("#txtSearch").val();
+            var url = "/customer/indexpartial?";
+            if (search !== "")
+                url = url + "search=" + encodeURIComponent(search) + "&";
+            return url;
+        }
+
+        function ajaxCall(url) {
+            $(".loader-wrapper").show();
+            $.get(url, function (data) {
+                $(".loader-wrapper").hide();
+                $("#indexPartialContent").replaceWith(data);
+            });
+        }
+
+        function gotoDetailsPage(id) {
+            window.location.href = "/customer/details/" + id;
+        }
+    </script>
+}

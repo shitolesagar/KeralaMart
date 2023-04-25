@@ -1,0 +1,41 @@
+﻿@model KeralaMiniMart.Entities.WebViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div class="login-pg text-center">
+    <div class="logo p-b-20 logo-wrapper">
+        <img src="~/images/app_logo.png" />
+    </div>
+
+    <p class="f-normal f-18 m-b-30 f-semi-bold">Login</p>
+    <form asp-action="Index" asp-controller="Account" spellcheck="false" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal container" autocomplete="off">
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-sm-9 col-md-8 col-lg-6 mx-auto">
+                <div class="login-form text-left">
+                    <div class="form-group">
+                        <label asp-for="Email" class="m-b-5 float-label">Email</label>
+                        <input asp-for="Email" class="form-control" placeholder="Email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="m-b-5 float-label"></label>
+                        <div class="position-relative">
+                            <input asp-for="Password" type="password" id="password-field" class="form-control" placeholder="Password" />
+                            <span toggle="#password-field" class="fa fa-fw fa-eye-slash field-icon toggle-password"></span>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="p-b-10 text-center">
+                        <button type="submit" class="btn btn-block btn-primary primary-btn">Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

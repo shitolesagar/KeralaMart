@@ -1,0 +1,242 @@
+﻿@model KeralaMiniMart.Entities.WebViewModels.ProductDetailsViewModel
+@{
+    ViewData["Title"] = "Product Details";
+    string stringHtml = "<a href=\"/product\"><img src=\"/images/icons/arrow-left.png\" class=\"vertical-middle iconWidth-25 cursor-pointer m-r-20\"></a>";
+    stringHtml = stringHtml + "<span class=\"display-inline\">Product Details</span>";
+
+    ViewData["TabHeading"] = stringHtml;
+    ViewData["ActiveTab"] = "product";
+    var message = TempData["Message"] ?? string.Empty;
+}
+
+@section Styles {
+    <link href="~/css/simplelightbox.css" rel="stylesheet" />
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="pull-right">
+            <span class="display-inline m-r-25 f-bold cursor-pointer"><a class="f-black" asp-controller="product" asp-action="edit" asp-route-id="@Model.Id"><img src="~/images/icons/edit.png" class="img-responsive action-icon" />Edit</a></span>
+            <span onclick="OpenDeleteConfirmBox('@Model.Id')" class="display-inline f-bold cursor-pointer"><img src="~/images/icons/trash.png" class="img-responsive action-icon" />Remove</span>
+        </div>
+    </div>
+</div>
+
+<div class="block-container mt-2">
+    <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-5">
+            <div id="mainImgDiv" class="img-wrapper m-b-20">
+                <div class="gallery">
+                    <a href="@Model.MainImageUrl">
+                        <img src="@(Model.MainImageUrl ?? "/images/icons/ic_camera.png")" class="img-responsive display-inline m-r-25 detailMain-img" />
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9 col-md-8 col-sm-7">
+            <div class="row">
+                @foreach (var imgPath in Model.ImagesPaths)
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div id="imgDiv1" class="img-wrapper m-t-25">
+                            <div class="gallery">
+                                <a href="@imgPath">
+                                    <img src="@(imgPath ?? "/images/icons/ic_camera.png")" class="img-responsive  display-inline m-r-25 mainSub-img" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="block-container mt-3">
+    <div class="row ">
+        <div class="col-8">
+            <p class="f-bold f-16">Basic Details</p>
+            <div class="form-group m-t-10 float-container position-relative">
+                <a href="~/Views/Product/Add.cshtml"></a>
+                <label class="control-label float-label">Product Name</label>
+                <p class="">@Model.ProductName</p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group custom-textEditor">
+                <label class="control-label float-label">Description</label>
+                <p class=""> @Html.Raw(Model.LongDescription) </p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group  position-relative ">
+                <label class="float-label">Category</label>
+                <p class=""> @Model.CategoryName</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group  position-relative">
+                <label class="float-label">Subcategory</label>
+                <p class=""> @(Model.FilterName ?? "NA")</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <label class="float-label">Is published on mobile app?</label>
+            <p class=""> @Model.Status</p>
+        </div>
+        @*<div class="col-4">
+            <label class="float-label">Available size</label>
+            <p class=""> @(Model.AvailableSizes ?? "NA")</p>
+
+        </div>*@
+        <div class="col-md-4">
+            <label class="float-label">Product has a color varient?</label>
+            <p class=""> @(Model.AvailableColors ?? "NA")</p>
+        </div>
+        @*<div class="col-md-4">
+            <div class="form-group float-container position-relative">
+                <label class="control-label float-label">Material Type</label>
+                <p class=""> @(Model.MaterialType ?? "NA")</p>
+            </div>
+        </div>*@
+        <div class="col-md-4">
+            <label class="float-label">Brand</label>
+            <p class=""> @(Model.Brand ?? "NA")</p>
+        </div>
+    </div>
+</div>
+
+@*<div class="block-container m-t-20">
+    <p class="f-bold f-16">Product Dimensions </p>
+    <div class="row">
+        <div class="col-2">
+            <div class="form-group m-t-10 float-container position-relative">
+                <label class="control-label float-label">Product Length</label>
+                <p class=""> @(Model.ProductLength ?? "NA")</p>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="form-group m-t-10 float-container position-relative">
+                <label class="control-label float-label">Product Width</label>
+                <p class=""> @(Model.ProductWidth ?? "NA")</p>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="form-group m-t-10 float-container position-relative">
+                <label class="control-label float-label">Product Height</label>
+                <p class=""> @(Model.ProductHeight ?? "NA")</p>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="form-group m-t-10 float-container position-relative">
+                <label class="control-label float-label">Product Weight</label>
+                <p class=""> @(Model.ProductWeight ?? "NA")</p>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+
+<div class="block-container m-t-20">
+    <p class="f-bold f-16">Pricing </p>
+    <div class="row">
+        <div class="col-2">
+            <div class="form-group m-t-10  float-container position-relative">
+                <label class="control-label float-label">Original Price</label>
+                <p class=""> @(string.IsNullOrEmpty(Model.OriginalPrice) ? "NA" : "₹ " + Model.OriginalPrice)</p>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="form-group m-t-10 float-container position-relative">
+                <label class="control-label float-label">Offer Price</label>
+                <p class=""> @(string.IsNullOrEmpty(Model.DiscountedPrice) ? "NA": "₹ " + Model.DiscountedPrice)</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="block-container m-t-20">
+    <p class="f-bold f-16">Other details</p>
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="form-group m-t-10  float-container position-relative">
+                <label class="control-label float-label">Approx. Delivery Time(In days)</label>
+                <p class=""> @(Model.DeliveryDays)</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group m-t-10 float-container position-relative">
+                <label class="control-label float-label">Accessories</label>
+                <p class=""> @(Model.Accessories ?? "NA")</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group m-t-10  float-container position-relative">
+                <label class="control-label float-label">Precaution / Instuctions</label>
+                <p class=""> @(Model.PrecautionsInstructions ?? "NA")</p>
+            </div>
+        </div>
+
+    </div>
+</div>*@
+<div class="block-container m-t-20">
+    <p class="f-bold f-16">Inventory</p>
+    <div class="row">
+        <div class="col-2">
+            <label class="float-label m-t-10">Selected Unit</label>
+            <p class=""> @Model.UnitName</p>
+        </div>
+        <div class="col-2">
+            <label class="float-label m-t-10">Product Weight</label>
+            <p class=""> @Model.Quantity</p>
+        </div>
+        <div class="col-2">
+            <div class="form-group m-t-10 float-container position-relative">
+                <label class="control-label float-label">Stock Keeping Unit</label>
+                <p class=""> @(Model.StockKeepingUnit ?? "NA")</p>
+            </div>
+        </div>
+        <div class="col-3">
+            <label class="float-label m-t-10">Is products quantity automated?</label>
+            <p class="" id=select> @Model.IsAvailable</p>
+        </div>
+        <div class="col-3" id="AvailableQuantity">
+            <div class="form-group mt-2 float-container position-relative">
+                <label class="control-label float-label">Available Quantity</label>
+                <p class=""> @Model.AvailableQuantity</p>
+            </div>
+        </div>
+        @*<div class="col-2">
+            <label class="float-label m-t-10">Is Product Exclusive?</label>
+            <p class=""> @Model.IsExclusive</p>
+        </div>*@
+    </div>
+</div>
+
+<partial name="_deletePopup" />
+
+@section Scripts{
+    <script src="~/js/simple-lightbox.min.js"></script>
+    <script>
+        var message = "@message";
+        if (message) {
+            ShowSlackbarSucessMessage(message);
+        }
+
+        $(function () {
+            var $gallery = $('.gallery a').simpleLightbox();
+        });
+
+        $(document).ready(function () {
+            if ($("#select").text() == "No") {
+                $("#AvailableQuantity").hide();
+            }
+        });
+    </script>
+}
+

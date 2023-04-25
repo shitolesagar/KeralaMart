@@ -1,0 +1,184 @@
+﻿@model KeralaMiniMart.Entities.WebViewModels.AddNotificationViewModel
+@{
+    ViewData["Title"] = "Edit Notification";
+    string stringHtml = "<a href=\"/notification/details/" + Model.Id + "\"><img src=\"/images/icons/arrow-left.png\" class=\"vertical-middle iconWidth-25 cursor-pointer m-r-20\"></a>";
+    stringHtml = stringHtml + "<span class=\"display-inline\">Edit notification</span>";
+
+    ViewData["TabHeading"] = stringHtml;
+    ViewData["ActiveTab"] = "notification";
+}
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.10/css/bootstrap-select.min.css">
+}
+<form asp-controller="notification" asp-action="add" autocomplete="off" id="form" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-6 detail-container">
+            <div class="detail-container">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="Title" class="control-label float-label">Title</label>
+                            <input type="text" asp-for="Title" class="form-control" maxlength="150" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="control-label float-label">Notification Type</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" asp-for="Type" id="rbText" value="text">
+                                <label class="form-check-label" for="rbText">Text</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" asp-for="Type" id="rbImage" value="image">
+                                <label class="form-check-label" for="rbImage">Image</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" id="divText">
+                        <div class="form-group">
+                            <label asp-for="Message" class="control-label float-label">Message</label>
+                            <textarea asp-for="Message" rows="2" spellcheck="false" class="form-control" maxlength="1024"></textarea>
+                            <span asp-validation-for="Message" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col" id="divImage" style="display:none;">
+                        @*<img src="~/images/icons/default-img.png" id="tempImg" class="img-responsive add-banner-img display-inline m-r-25" />*@
+                        <img src="@(Model.ImageUrl== null ? "/images/icons/default-img.png" : @Model.ImageUrl)" id="tempImg" class="img-responsive add-banner-img display-inline m-r-25 m-b-20" />
+                        <label for="file-input" class="btn btn-primary">Add/Change Image</label>
+                        <input asp-for="File" id="file-input" class="form-control display-none" accept="image/*">
+                        <div>
+                            <input type="text" asp-for="ImageUrl" class="display-none" />
+                            <span id="ImageName-error" class="text-danger mb-2" asp-validation-for="ImageUrl"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group  position-relative ">
+                            <label class="float-label">Notification has a category?</label>
+                            <div class="my-custom-select width-100">
+                                <select class="form-control select-dropDown" asp-for="CategoryId" value="" asp-items="ViewBag.CategoryList">
+                                    <option value="">select</option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <div class="form-group">
+                            <label class="float-label">For any specific Locations ?</label>
+                            <div class="my-custom-select width-100">
+                                <select class="form-control selectpicker" data-selected-text-format="count > 3" asp-for="SelectedDeliveryLocationIds" asp-items="ViewBag.DeliveryLocationList" title="select"></select>
+                            </div>
+                            <span asp-validation-for="SelectedDeliveryLocationIds" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="detailBtn-group mt-3">
+                    <button type="button" id="btnSubmit" class="btn btn-primary">Resend</button>
+                    <button type="button" class="btn btn-secondary" id="btnCancel" onclick="location.href='/notification/details?id=@Model.Id'">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.10/js/bootstrap-select.min.js"></script>
+    <script>
+        var notificationType = $('input[type=radio][name=Type]:checked').val();
+        $(document).ready(function () {
+            notificationType = $('input[type=radio][name=Type]:checked').val();
+            if (notificationType == 'image') {
+                $("#divImage").show();
+                $("#divText").hide();
+                $("span[data-valmsg-for='ImageUrl']").text("");
+            }
+            $("#btnSubmit").click(function () {
+                $("#Title").val($("#Title").val().trim());
+                isFormValid();
+                if ($("#form").valid() && isFormValid()) {
+                    $("#btnSubmit").prop("disabled", "true")
+                    $("#btnCancel").prop("disabled", "true")
+                    $("#form").submit();
+                }
+            });
+            $('input[type=radio][name=Type]').change(function () {
+                notificationType = $('input[type=radio][name=Type]:checked').val();
+                if (this.value == 'text') {
+                    $("#divImage").hide();
+                    $("#divText").show();
+                    $("span[data-valmsg-for='Message']").text("");
+                }
+                else if (this.value == 'image') {
+                    $("#divImage").show();
+                    $("#divText").hide();
+                    $("span[data-valmsg-for='ImageUrl']").text("");
+                }
+            });
+        });
+
+        function isFormValid() {
+            if (notificationType == "text") {
+                // check for text required validation
+                if ($("#Message").val().trim() == "") {
+                    $("#Message").val('');
+                    $("span[data-valmsg-for='Message']").text("Please enter text");
+                    return false;
+                }
+                else {
+                    $("span[data-valmsg-for='Message']").text("");
+                    return true;
+                }
+            }
+            else {
+                // check for image required validation
+                if ($("#ImageUrl").val() == "") {
+                    $("span[data-valmsg-for='ImageUrl']").text("Please select image");
+                    return false;
+                }
+                else {
+                    $("span[data-valmsg-for='ImageUrl']").text("");
+                    return true;
+                }
+            }
+            return false
+        }
+
+        var _URL = window.URL || window.webkitURL;
+        $("#file-input").change(function (e) {
+            var file, img;
+            $("#ImageName-error").text('');
+            if ((file = this.files[0])) {
+                if (file.type === "image/png" || file.type === "image/jpeg" || file.type === "image/jpg") {
+                    if (file.size <= 1000000) {
+                        // only valid block
+                        img = new Image();
+                        img.onload = function () {
+                            $("#tempImg").attr("src", img.src);
+                        };
+                        img.src = _URL.createObjectURL(file);
+                        $("#ImageUrl").val("Dummy Image URL")
+                    }
+                    else {
+                        // size error block
+                        $("#ImageUrl").val("")
+                        $("#ImageName-error").text("Image size should be less than 1 MB.");
+                    }
+                }
+                else {
+                    $("#ImageUrl").val("")
+                    $("#ImageName-error").text('File is not a valid image.');
+                }
+            }
+        });
+    </script>
+}

@@ -1,0 +1,472 @@
+﻿@model KeralaMiniMart.Entities.WebViewModels.AddProductViewModel
+@{
+    ViewData["Title"] = "Add Product";
+    string stringHtml = "<span onclick=\"goToPreviousPage()\"><img src=\"/images/icons/arrow-left.png\" class=\"vertical-middle iconWidth-25 cursor-pointer m-r-20\"></span>";
+    stringHtml = stringHtml + "<span class=\"display-inline\">Add Product</span>";
+    ViewData["TabHeading"] = stringHtml;
+    ViewData["ActiveTab"] = "product";
+}
+
+
+@section Styles {
+    <link href="~/css/summernote.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.10/css/bootstrap-select.min.css">
+}
+<form asp-controller="product" asp-action="add" autocomplete="off" id="productForm" enctype="multipart/form-data">
+    <div class="block-container mt-2">
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-5">
+                <div id="mainImgDiv" class="img-wrapper m-b-20">
+                    <img src="~/images/icons/ic_camera.png" class="img-responsive display-inline m-r-25 detailMain-img" />
+                    <label class="file-wrapper text-center cursor-pointer" for="Image">Choose file <span class="f-red"> *</span></label>
+                </div>
+                <input type="file" class="display-none" onchange="ValidateAndSetImage('mainImgDiv', this, true, 'Image')" asp-for="Image" accept="image">
+                <input type="text" class="display-none" asp-for="MainImageText" />
+                <span asp-validation-for="MainImageText" id="MainImageError" class="text-danger"></span>
+            </div>
+            <div class="col-lg-9 col-md-8 col-sm-7">
+                <div class="row">
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div id="imgDiv1" class="img-wrapper m-t-25">
+                            <img src="~/images/icons/ic_camera.png" class="img-responsive  display-inline m-r-25 mainSub-img" />
+                            <label class="file-wrapper text-center cursor-pointer" for="Image1">Choose file </label>
+                        </div>
+                        <input type="file" class="display-none" onchange="ValidateAndSetImage('imgDiv1', this, false,'Image1')" asp-for="Image1" accept="image">
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div id="imgDiv2" class="img-wrapper m-t-25">
+                            <img src="~/images/icons/ic_camera.png" class="img-responsive  display-inline m-r-25 mainSub-img" />
+                            <label class="file-wrapper text-center cursor-pointer" for="Image2">Choose file</label>
+                        </div>
+                        <input type="file" class="display-none" onchange="ValidateAndSetImage('imgDiv2', this, false,'Image2')" asp-for="Image2" accept="image">
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div id="imgDiv3" class="img-wrapper m-t-25">
+                            <img src="~/images/icons/ic_camera.png" class="img-responsive  display-inline m-r-25 mainSub-img" />
+                            <label class="file-wrapper text-center cursor-pointer" for="Image3">Choose file</label>
+                        </div>
+                        <input type="file" class="display-none" onchange="ValidateAndSetImage('imgDiv3', this, false,'Image3')" asp-for="Image3" accept="image">
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div id="imgDiv4" class="img-wrapper m-t-25">
+                            <img src="~/images/icons/ic_camera.png" class="img-responsive  display-inline m-r-25 mainSub-img" />
+                            <label class="file-wrapper text-center cursor-pointer" for="Image4">Choose file</label>
+                        </div>
+                        <input type="file" class="display-none" onchange="ValidateAndSetImage('imgDiv4', this, false,'Image4')" asp-for="Image4" accept="image">
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <a class="f-bold cursor-pointer text-primary m-t-10 display-inline" data-toggle="collapse" data-target="#description">Product image requirements</a>
+                <div id="description" class="collapse">
+                    <div class="row">
+                        <div class="col-md-12 ">
+                            <p class=""> </p>
+                            <p class="m-t-10">
+                                Listings that are missing a main image will not appear in search or browse until you fix the listing.
+                                Choose images that are clear, information-rich, and attractive.
+                                Images must meet the following requirements:
+                            </p>
+                            <ul class="m-t-20 m-l-20">
+                                <li>Products must fill at least 85% of the image. Images must show only the product that is for sale, with few or no props and with no logos, watermarks, or inset images. Images may only contain text that is a part of the product.</li>
+                                <li>Main images must have a pure white background, must be a photo (not a drawing), and must not contain excluded accessories.</li>
+                                <li>Images must not be more than 1MB size</li>
+                                <li>JPEG, PNG & JPG is the preferred image format.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="block-container mt-3">
+        <div class="row ">
+            <div class="col-8">
+                <p class="f-bold f-16">Basic Details</p>
+                <div class="form-group m-t-10 float-container position-relative">
+                    <a href="~/Views/Product/Add.cshtml"></a>
+                    <label class="control-label float-label">Product Name<span class="f-red"> *</span></label>
+                    <input type="text" asp-for="ProductName" class="form-control" maxlength="150" required placeholder="eg : Coconut" />
+                    <span asp-validation-for="ProductName" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group custom-textEditor">
+                    <label class="control-label float-label">Description<span class="f-red"> *</span></label>
+                    <textarea id="txtSummernote" asp-for="LongDescription"></textarea>
+                    <span asp-validation-for="LongDescription" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group  position-relative ">
+                    <label class="float-label">Product has a category?<span class="f-red"> *</span> </label>
+                    <div class="my-custom-select width-100">
+                        <select class="form-control select-dropDown" asp-for="CategoryId" value="" asp-items="ViewBag.CategoryList">
+                            <option value="">select</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+
+                <div class="form-group  position-relative">
+
+                    <label class="float-label">Product has a subcategory?</label>
+                    <div class="my-custom-select width-100">
+                        <select class="form-control select-dropDown" asp-for="FilterId" value="">
+                            <option value="">select</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="FilterId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label class="float-label">Publish in mobile app?<span class="f-red"> *</span></label>
+                <div class="my-custom-select width-100">
+                    <select class="form-control select-dropDown" asp-for="Status" value="">
+                        <option value="">select</option>
+                        <option>Publish</option>
+                        <option>Unpublish</option>
+                    </select>
+                </div>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            @*<div class="col-4">
+                    <label class="float-label">Available size</label>
+                    <div class="my-custom-select width-100">
+                        <select class="form-control selectpicker" asp-for="SelectedSizeIds" asp-items="ViewBag.AvaliableSizeList" title="select"></select>
+                    </div>
+                    <span asp-validation-for="SelectedSizeIds" class="text-danger"></span>
+                </div>*@
+            <div class="col-md-4">
+                <label class="float-label">Product has a color varient?</label>
+                <div class="my-custom-select width-100">
+                    <select class="form-control selectpicker" asp-for="SelectedColorIds" asp-items="ViewBag.ColorList" title="select"></select>
+                </div>
+                <span asp-validation-for="SelectedColorIds" class="text-danger"></span>
+            </div>
+            @*<div class="col-md-4">
+                    <div class="form-group float-container position-relative">
+                        <label class="control-label float-label">Material Type</label>
+                        <input type="text" asp-for="MaterialType" class="form-control" placeholder="eg : Silk, Cotton" />
+                        <span asp-validation-for="MaterialType" class="text-danger"></span>
+                    </div>
+                </div>*@
+            <div class="col-md-4">
+                <div class="form-group float-container position-relative">
+                    <label class="control-label float-label">Brand</label>
+                    <input type="text" asp-for="Brand" class="form-control" placeholder="please enter brand" />
+                    <span asp-validation-for="Brand" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="block-container m-t-20">
+            <p class="f-bold f-16">Product Dimensions</p>
+            <div class="row">
+                <div class="col-2">
+                    <div class="form-group m-t-10 float-container position-relative">
+                        <label class="control-label float-label">Product Length</label>
+                        <input type="text" asp-for="ProductLength" class="form-control" placeholder="eg : 430 cm" />
+                        <span asp-validation-for="ProductLength" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-group m-t-10 float-container position-relative">
+                        <label class="control-label float-label">Product Width</label>
+                        <input type="text" asp-for="ProductWidth" class="form-control" placeholder="eg : 110 cm" />
+                        <span asp-validation-for="ProductWidth" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-group m-t-10 float-container position-relative">
+                        <label class="control-label float-label">Product Height</label>
+                        <input type="text" asp-for="ProductHeight" class="form-control" placeholder="eg : 60 cm" />
+                        <span asp-validation-for="ProductHeight" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-group m-t-10 float-container position-relative">
+                        <label class="control-label float-label">Product Weight</label>
+                        <input type="text" asp-for="ProductWeight" class="form-control" placeholder="eg : 600 g" />
+                        <span asp-validation-for="ProductWeight" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+
+    <div class="block-container m-t-20">
+        <p class="f-bold f-16">Pricing </p>
+        <div class="row">
+            <div class="col-2">
+                <div class="form-group m-t-10  float-container position-relative">
+                    <label class="control-label float-label">Original Price</label>
+                    <input type="text" asp-for="OriginalPrice" class="form-control" placeholder="eg : 100" />
+                    <span asp-validation-for="OriginalPrice" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group m-t-10 float-container position-relative">
+                    <label class="control-label float-label">Offer Price<span class="f-red"> *</span></label>
+                    <input type="text" asp-for="DiscountedPrice" class="form-control" placeholder="eg : 80" required />
+                    <span asp-validation-for="DiscountedPrice" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="block-container m-t-20">
+            <p class="f-bold f-16">Other details</p>
+            <div class="row">
+
+                <div class="col-md-4">
+                    <div class="form-group m-t-10  float-container position-relative">
+                        <label class="control-label float-label">Approx. Delivery Time(In days)</label>
+                        <input type="text" asp-for="DeliveryDays" class="form-control" placeholder="eg : 5" />
+                        <span asp-validation-for="DeliveryDays" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-t-10 float-container position-relative">
+
+
+
+                        <label class="control-label float-label">Accessories</label>
+                        <textarea asp-for="Accessories" rows="2" spellcheck="false" class="form-control" placeholder="eg : Blouse piece"></textarea>
+                        <span asp-validation-for="Accessories" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-t-10  float-container position-relative">
+                        <label class="control-label float-label">Precaution / Instuctions</label>
+                        <textarea asp-for="PrecautionsInstructions" rows="2" spellcheck="false" class="form-control" placeholder="eg : Dry clean only" ></textarea>
+                        <span asp-validation-for="PrecautionsInstructions" class="text-danger"></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>*@
+    <div class="block-container m-t-20">
+        <p class="f-bold f-16">Inventory</p>
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group mt-2  position-relative ">
+                    <label class="float-label">Unit <span class="f-red"> *</span> </label>
+                    <div class="my-custom-select width-100">
+                        <select class="form-control select-dropDown" asp-for="UnitId" value="" asp-items="ViewBag.UnitList">
+                            <option value="">select</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="UnitId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group mt-2 float-container position-relative">
+                    <label class="control-label float-label">Product Weight <span class="f-red"> *</span></label>
+                    <input type="text" asp-for="Quantity" class="form-control" placeholder="eg : 250" />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group mt-2 float-container position-relative">
+                    <label class="control-label float-label">Stock Keeping Unit</label>
+                    <input type="text" asp-for="StockKeepingUnit" class="form-control" placeholder="eg : UGG-BB-PUR-07." />
+                    <span asp-validation-for="StockKeepingUnit" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-4">
+                <label class="float-label mt-2">Do you want automate stock quantity maintainance?</label>
+                <div class="my-custom-select width-100">
+                    <select class="form-control select-dropDown" id=select asp-for="IsAvailable">
+                        <option value="false">select</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-4" id="AvailableQuantity" >
+                <div class="form-group mt-2 float-container position-relative">
+                    <label class="control-label float-label">Available Quantity</label>
+                    <input type="text" asp-for="AvailableQuantity" class="form-control" placeholder="eg : 200" />
+                    <span asp-validation-for="AvailableQuantity" class="text-danger"></span>
+                </div>
+            </div>
+            @*
+        <div class="col-2">
+            <label class="float-label m-t-10">Is Product Exclusive?</label>
+            <div class="my-custom-select width-100">
+                <select class="form-control select-dropDown" asp-for="IsExclusive">
+                    <option value="false">select</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+        </div>
+            *@
+        </div>
+
+    </div>
+    <div class="m-t-20 m-l-20">
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    </div>
+    <div class="m-t-30">
+        <button type="button" id="btnSubmit" class="btn btn-primary m-r-10">Add</button>
+        <a asp-controller="product" asp-action="index" class="btn btn-secondary">Cancel</a>
+    </div>
+
+</form>
+
+@section Scripts {
+    <script src="~/js/summernote.min.js"></script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.10/js/bootstrap-select.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#txtSummernote').summernote({
+                height: 100,
+                toolbar: [
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                ]
+            });
+
+            $(".note-editable").blur(function () {
+                var DescriptionLength = ($("#txtSummernote").val().replace(/<(?:.|\n)*?>/gm, '').replace(/&nbsp;/g, '')).trim().length;
+                if (DescriptionLength == 0) {
+                    $("#txtSummernote").val('');
+                }
+                $("#txtSummernote").valid();
+            });
+
+            $("#CategoryId").change(function () {
+                $.get("/Product/GetSubcategoryDropList?categoryId=" + $("#CategoryId").val(), function (data) {
+                    $("#FilterId").empty();
+                    $("#FilterId").append("<option value=''>select</option>")
+                    $.each(data, function (index, row) {
+                        $("#FilterId").append("<option value='" + row.id + "'>" + row.name + "</option>")
+                    })
+                })
+            })
+
+            // following is used to initilize select picler
+            $('.selectpicker').selectpicker({
+                selectedTextFormat: 'count > 5',
+                noneSelectedText: 'select'
+            });
+        })
+        // This function execute when we click on (x) close icon
+        function onRemoveImageClick(parentDivId, isMain, inputFileName) {
+            if (isMain) {
+                $("#MainImageText").val("");
+            }
+            $("#" + inputFileName).val('');
+            $("#" + parentDivId).html(CreateMainDivDefaultImage(isMain, inputFileName, parentDivId));
+        }
+
+        // this function execute when we select valid image
+        function setImageDiv(parentDivId, src, isMain, inputFileName) {
+            $("#" + parentDivId).html(CreateMainDivSelectedImage(src, isMain, inputFileName, parentDivId));
+        }
+
+        // this function is execute when we select image
+        function ValidateAndSetImage(parentDivId, inputRef, isMain, fileControlName) {
+            if (isMain) {
+                $("#MainImageText").val("");
+            }
+            var file = inputRef.files[0];
+            if (file) {
+                if (file.type === "image/png" || file.type === "image/jpeg" || file.type === "image/jpg") {
+                    if (file.size <= 1000000) {
+                        // only valid block
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            setImageDiv(parentDivId, e.target.result, isMain, fileControlName);
+                        }
+                        reader.readAsDataURL(file);
+                        if (isMain) {
+                            $("#MainImageText").val("Image Added");
+                        }
+                    }
+                    else {
+                        // size error block
+                        ShowSlackbarErrorMessage("Image size should be less than 1 MB.")
+                        $("#" + fileControlName).val('');
+                    }
+                }
+                else {
+                    // extension error block
+                    ShowSlackbarErrorMessage("Image is not valid.")
+                    $("#" + fileControlName).val('');
+                }
+                if (isMain) {
+                    $("#MainImageText").valid();
+                }
+            }
+        }
+
+        function CreateMainDivDefaultImage(isMain, fileControlName, parentDivId) {
+            var divString = ''
+            if (isMain) {
+                divString = '<img src="/images/icons/ic_camera.png" class="img-responsive display-inline m-r-25 detailMain-img" />';
+                //  divString = divString + '<input type="file" class="display-none" onchange="ValidateAndSetImage(\'' + parentDivId + '\', this, ' + isMain + ',\'' + fileControlName + '\')" id="' + fileControlName + '" name="' + fileControlName + '" accept="image">';
+                divString = divString + '<label class="file-wrapper text-center cursor-pointer" for="' + fileControlName + '">Choose file <span class="f-red"> *</span></label>';
+            } else {
+                divString = '<img src="/images/icons/ic_camera.png" class="img-responsive display-inline m-r-25 mainSub-img" />';
+                //   divString = divString + '<input type="file" class="display-none" onchange="ValidateAndSetImage(\'' + parentDivId + '\', this, ' + isMain + ',\'' + fileControlName + '\')" name="' + fileControlName + '" id="' + fileControlName + '" accept="image">';
+                divString = divString + '<label class="file-wrapper text-center cursor-pointer" for="' + fileControlName + '">Choose file</label>';
+            }
+            return divString;
+        }
+
+        function CreateMainDivSelectedImage(img, isMain, inputFileName, parentDivId) {
+            var divString = '';
+            if (isMain) {
+                divString = '<img src="/images/icons/close.png" onclick="onRemoveImageClick(\'' + parentDivId + '\', ' + isMain + ', \'' + inputFileName + '\')"  class="close-icon iconWidth-25 cursor-pointer">';
+                divString = divString + '<img src="' + img + '" style="height: 250px;" class="img-responsive display-inline m-r-25 detailMain-img" />';
+            } else {
+                divString = '<img src="/images/icons/close.png" onclick="onRemoveImageClick(\'' + parentDivId + '\', ' + isMain + ', \'' + inputFileName + '\')"  class="close-icon iconWidth-25 cursor-pointer">';
+                divString = divString + '<img src="' + img + '" style="height: 137px;" class="img-responsive display-inline m-r-25 mainSub-img" />';
+            }
+            return divString;
+        }
+
+        $.validator.setDefaults({
+            ignore: [],
+        });
+
+        $(document).ready(function () {
+            $("#btnSubmit").click(function () {
+                if ($("#productForm").valid()) {
+                    $("#btnSubmit").prop("disabled", "true")
+                    $("#productForm").submit();
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $("#AvailableQuantity").hide();
+            $("#select").change(function () {
+                if ($("#select").val() == "false") {
+                    $("#AvailableQuantity").hide();
+                }
+                else if ($("#select").val() == "true") {
+                    $("#AvailableQuantity").show();
+                }
+            });
+        });
+    </script>
+
+}
+
+

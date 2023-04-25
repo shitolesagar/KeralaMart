@@ -1,0 +1,58 @@
+/*RWD*/
+
+@media (max-width: 991px) {
+    .nav-md .container.body .right_col,
+    .nav-md .container.body .top_nav {
+        width: 100%;
+        margin: 0
+    }
+    .nav-md .container.body .col-md-3.left_col {
+        display: none
+    }
+    .nav-md .container.body .right_col {
+        width: 100%;
+        padding-right: 0
+    }
+    .right_col {
+        padding: 10px !important
+    }
+}
+@media (max-width:767px){
+	.card-type{
+		margin-top: 10px;
+		position:static;
+	}
+	header .phone{
+		display:none;
+	}
+	.hint-popup{
+		float:left;
+		margin-top:5px;
+	}
+	.popover {
+		max-width: 250px;
+	}
+	.popover img{
+		width:100%;
+	}
+}
+@media (max-width:640px){
+	.security {
+		width: 160px;
+		font-size: 13px;
+		text-transform: uppercase;
+		margin: -3px 0;
+	}
+	header .logo img {
+		max-height: 52px;
+		max-width: 140px;
+	}
+	header{
+		height:56px;
+	}
+}
+@media (max-width:480px){
+	.heading{
+		font-size:20px;
+	}
+}

@@ -1,0 +1,59 @@
+﻿@model KeralaMiniMart.Entities.WebViewModels.BannerDetailsViewModel
+@{
+    ViewData["Title"] = "Banner Details";
+    string stringHtml = "<a href=\"/bannerads\"><img src=\"/images/icons/arrow-left.png\" class=\"vertical-middle iconWidth-25 cursor-pointer m-r-20\"></a>";
+    stringHtml = stringHtml + "<span class=\"display-inline\">Banner Details</span>";
+
+    ViewData["TabHeading"] = stringHtml;
+    ViewData["ActiveTab"] = "banner";
+    var message = TempData["Message"] ?? string.Empty;
+
+}
+
+<div class="row">
+    <div class="col-7">
+        <div class="detail-container">
+            <div class="pull-right">
+                <span class="display-inline m-r-25 f-bold cursor-pointer"><a class="f-black" asp-controller="bannerads" asp-action="edit" asp-route-id="@Model.Id"><img src="~/images/icons/edit.png" class="img-responsive action-icon" />Edit</a></span>
+                <span onclick="OpenDeleteConfirmBox('@Model.Id')" class="display-inline f-bold cursor-pointer"><img src="~/images/icons/trash.png" class="img-responsive action-icon" />Remove</span>
+            </div>
+            <div class="pull-left gallery">
+                <img src="@Model.ImageUrl" class="img-responsive add-banner-img display-inline" />
+            </div>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-12">
+                    <p class="control-label float-label mt-4">Name</p>
+                    <p>@Model.Caption</p>
+
+                    <p class="control-label float-label mt-4">Start Date</p>
+                    <p>@(Model.StartDate ?? "NA")</p>
+
+                    <p class="control-label float-label mt-4">Expiry Date</p>
+                    <p>@(Model.ExpireDate ?? "NA")</p>
+
+                    <p class="control-label float-label mt-4">Created Date</p>
+                    <p>@Model.CreatedDate</p>
+
+                    @if (Model.ModifiedDate != null)
+                    {
+                        <p class="control-label float-label mt-4">Modified Date</p>
+                        <p>@Model.ModifiedDate</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<partial name="_deletePopup" />
+
+@section Scripts {
+    <script>
+        var message = "@message";
+        if (message) {
+            ShowSlackbarSucessMessage(message);
+        }
+
+    </script>
+}

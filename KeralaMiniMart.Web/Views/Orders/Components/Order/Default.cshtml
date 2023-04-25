@@ -1,0 +1,50 @@
+﻿@model KeralaMiniMart.Entities.WebViewModels.OrderWrapperViewModel
+<div id="indexPartialContent" class="table-wrapper">
+    @if (Model.TotalCount <= 0)
+    {
+        <div class="list-empty-state">
+            @if (ViewBag.ShowEmptyState == true)
+            {
+                <p class="m-t-25 f-22 f-bold">
+                    No orders has been placed yet.
+                </p>
+            }
+            else
+            {
+                <p class="m-t-25 f-22 f-bold">
+                    No Result Found!
+                </p>
+                <p class="f-gray m-t-10 f-14">We couldn't find the item you were looking for. Please try again.</p>
+            }
+        </div>
+    }
+    else
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Sr. no.</th>
+                    <th>User</th>
+                    <th>Order Number</th>
+                    <th>Delivery Status</th>
+                    <th>Est. Delivery Date</th>
+                    <th>Placed Date</th>
+</thead>
+            <tbody>
+                @foreach (var order in Model.OrderList)
+                {
+                <tr onclick="redirectToDetails('/orders/details/@order.Id')">
+                    <td>@order.Number</td>
+                    <td>@order.UserName</td>
+                    <td>@order.OrderNumber</td>
+                    <td>@order.Status</td>
+                    <td>@(order.DeliveryDay ?? "NA")</td>
+                    <td>@order.CreatedDate</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        <!--Pagination-->
+        <partial name="_pagination" model="Model.PagingData" />
+    }
+</div>

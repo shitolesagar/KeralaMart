@@ -1,0 +1,132 @@
+﻿@model KeralaMiniMart.Entities.WebViewModels.CustomerDetailsViewModel
+@{
+    ViewData["Title"] = "Customer Details";
+    string stringHtml = "<span onclick=\"goToPreviousPage()\"><img src=\"/images/icons/arrow-left.png\" class=\"vertical-middle iconWidth-25 cursor-pointer m-r-20\"></span>";
+    stringHtml = stringHtml + "<span class=\"display-inline\">Customer Details</span>";
+
+    ViewData["TabHeading"] = stringHtml;
+    ViewData["ActiveTab"] = "customer";
+}
+
+@section Styles {
+    <link href="~/css/simplelightbox.css" rel="stylesheet" />
+}
+
+<div class="row bg-white py-3">
+    <div class="col-2">
+        <div class="pull-left gallery">
+            <a href="@Model.ImagePath">
+                <img src="@(Model.ImagePath?? "/images/icons/userprofile_.png")" alt="profile pic" class="img-fluid" />
+            </a>
+        </div>
+    </div>
+    <div class="col-10">
+        <p class="f-gray">Name</p>
+        <p class="">@Model.Name</p>
+        <p class="f-gray mt-3">Email</p>
+        <p class="">@(string.IsNullOrEmpty(Model.Email) ? "NA" : Model.Email)</p>
+        <p class="f-gray mt-3">Mobile</p>
+        <p class="">@Model.MobileNumber</p>
+        <p class="f-gray mt-3">City</p>
+        <p class="">@(string.IsNullOrEmpty(Model.City) ? "NA" : Model.City)</p>
+    </div>
+    <div class="col-3">
+        <p class="f-gray mt-3">Register On: <span class=" f-black">@Model.RegisteredDate</span></p>
+    </div>
+</div>
+
+<div class="row bg-white py-3">
+    <div class="col-12">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item my-nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#order" role="tab" aria-selected="true">Order</a>
+            </li>
+            <li class="nav-item my-nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#address" role="tab" aria-selected="false">Address</a>
+            </li>
+
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="order" role="tabpanel">
+                @if (Model.OrderList.Count > 0)
+                {
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Order Number</th>
+                                <th>Status</th>
+                                <th>Placed Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.OrderList)
+                            {
+                                <tr onclick="gotoDetailsPage('@order.Id')">
+                                    <td>@order.Number</td>
+                                    <td>@order.OrderNumber</td>
+                                    <td>@order.Status</td>
+                                    <td>@order.CreatedDate</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="text-center m-5 p-5">
+                        <p class="f-22 f-bold">
+                            No orders has been placed yet.
+                        </p>
+                    </div>
+                }
+            </div>
+            <div class="tab-pane fade" id="address" role="tabpanel">
+                @if (Model.UserAddressList.Count > 0)
+                {
+                    <div class="row m-auto">
+                        @foreach (var address in Model.UserAddressList)
+                        {
+                            <div class="col-md-3 p-2 d-flex align-items-stretch">
+                                <div class="card mb-3 w-100" style="max-width: 18rem;">
+                                    <div class="card-header">Address @address.Number</div>
+                                    <div class="card-body">
+                                        <p class="card-text" title="Address">@address.Address</p>
+                                        <p class="card-text" title="Landmark">@address.Landmark</p>
+                                        <p class="card-text" title="Locality">@address.Locality</p>
+                                        <p class="card-text" title="Pincode">@address.Pincode</p>
+                                        <p class="text-right" title="Mobile Number">@address.MobileNumber</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center m-5 p-5">
+                        <p class="f-22 f-bold">
+                            No Address has been added yet.
+                        </p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/simple-lightbox.min.js"></script>
+
+    <script>
+        function gotoDetailsPage(id) {
+            window.location.href = "/orders/details/" + id;
+        }
+    </script>
+    <script>
+        $(function () {
+            var $gallery = $('.gallery a').simpleLightbox();
+        });
+    </script>
+
+}

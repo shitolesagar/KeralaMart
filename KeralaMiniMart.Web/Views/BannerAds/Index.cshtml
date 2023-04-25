@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Banner Ads";
+    string stringHtml = "<span class=\"display-inline\">Banner Ads</span>";
+    string AddButton = string.Format("<span class=\"nav-item\"><a class=\"btn nav-link btn-primary m-r-20 add-icon\" href=\"/bannerads/add\"  ><span class=\"addIcon-txt\">Add New Banner</span><img src=\"/images/icons/Plus.png\" /> </a></span>");
+
+    ViewData["TabButton"] = AddButton;
+    ViewData["TabHeading"] = stringHtml;
+    ViewData["ActiveTab"] = "banner";
+    var message = TempData["Message"] ?? string.Empty;
+    string ddlSelectedValue = ViewBag.ddlStausSelected;
+}
+
+@section Styles {
+    <link href="~/css/simplelightbox.css" rel="stylesheet" />
+}
+
+<div class="row" id="filterRow">
+    <div class="col-lg-4 col-sm-4">
+        <div class="form-group  position-relative">
+            <div class="my-custom-select">
+                <select onchange="filter(this)" class="form-control select-dropDown" id="ddlStatus">
+                    <option value="Active">Active</option>
+                    <option value="InActive">InActive</option>
+                    <option value="Expired">Expired</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+@await Component.InvokeAsync("Banner", new { isPartial = ViewBag.IsPartial, filter = ViewBag.Filters })
+
+<partial name="_deletePopup" />
+
+@section Scripts{
+    <script src="~/js/simple-lightbox.min.js"></script>
+
+    <script>
+        var message = "@message";
+        if (message) {
+            ShowSlackbarSucessMessage(message);
+        }
+
+        function getRecordsByPageIndex(pageIndex) {
+            var url = CreateUrlString() + "pageIndex=" + pageIndex + "&";
+            $(".loader-wrapper").show();
+            $.get(url, function (data) {
+                $("#indexPartialContent").replaceWith(data);
+                $(".loader-wrapper").hide();
+            });
+        }
+
+        function CreateUrlString() {
+            var url = "/bannerads/indexpartial?";
+            var selectedValue = $("#ddlStatus").val();
+            if (selectedValue == "Expired")
+                url = url + "showExpired=" + encodeURIComponent("true") + "&";
+            else if (selectedValue == "InActive")
+                url = url + "showInActive=" + encodeURIComponent("true") + "&";
+
+            return url;
+        }
+
+        function filter(obj) {
+            if (($("#indexPartialContent").text()).length > 0) {
+                $(".loader-wrapper").show();
+                $.get(CreateUrlString(), function (data) {
+                    $(".loader-wrapper").hide();
+                    $("#indexPartialContent").replaceWith(data);
+                });
+            }
+        }
+
+        function OpenConfirmBox(id) {
+            event.stopPropagation();
+            $('#myModal').modal('show');
+            $("#delete-id").val(id);
+            var selectedValue = $("#ddlStatus").val();
+            if (selectedValue == "Expired")
+                $("#showExpired").val("True");
+            else if (selectedValue == "InActive")
+                $("#showInActive").val("True");
+        }
+
+        $("#ddlStatus").val("@ddlSelectedValue");
+
+
+        // this is called form main method to hide or show filters
+        showHideFilters("filterRow");
+        $(function () {
+            var $gallery = $('.gallery a').simpleLightbox();
+        });
+    </script>
+}

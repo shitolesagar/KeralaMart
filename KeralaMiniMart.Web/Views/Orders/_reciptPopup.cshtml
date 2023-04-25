@@ -1,0 +1,30 @@
+﻿<!-- Modal -->
+@model KeralaMiniMart.Entities.WebViewModels.DetailsPageViewModels.OrderDetailsViewModel
+@{
+string title = Model.ApplicationUser + " " + Model.OrderNumber;
+}
+<div class="modal fade" id="reciptModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Receipt</h4>
+
+                <button type="button" class="close" data-dismiss="modal">
+                    <i class="fa fa-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="width:100%;">
+                <div class="text-right">
+                    <button type="button" class="btn btn-primary" onclick="document.title = '@title';window.print()">Print</button>
+                </div>
+                <div id="recipt-render">
+
+                </div>
+            </div>
+            <div class="m-b-20 text-right mr-4">
+                <button type="button" class="btn btn-primary" onclick="document.title = '@title';window.print()">Print</button>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,43 @@
+﻿@model KeralaMiniMart.Entities.WebViewModels.CategoryWrapperViewModel
+<div id="indexPartialContent">
+    @if (Model.TotalCount <= 0)
+    {
+        <div class="list-empty-state">
+            <a asp-action="add" asp-controller="category" class="btn btn-primary mr-4 add-icon"> Add New Category <img src="/images/icons/Plus.png"></a>
+            <p class="mt-4 f-22 f-bold">
+                Start adding category.
+            </p>
+            <p class="f-gray mt-2 f-14">Click on "Add New Category" button to add category.</p>
+
+        </div>
+    }
+    else
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th width="10%">Sr. no.</th>
+                    <th width="20%">Name</th>
+                    <th width="30%">Description</th>
+                    <th width="20%" class="text-center">Manage</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var category in Model.CategoryList)
+                {
+                    <tr onclick="redirectToDetails('/category/details/@category.Id')">
+                        <td>@category.Number</td>
+                        <td>@category.Name</td>
+                        <td>@( string.IsNullOrEmpty(category.Description) ? "NA" : category.Description)</td>
+                        <td class="text-center">
+                            <span title="Remove" class="cursor-pointer" onclick="redirectToEdit('/category/edit/@category.Id')"><i class="fa fa-pencil ml-3" aria-hidden="true"></i></span>
+                            <span title="Remove" class="cursor-pointer" onclick="OpenDeleteConfirmBox('@category.Id')"><i class="fa fa-trash ml-3" aria-hidden="true"></i></span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <!--Pagination-->
+        <partial name="_pagination" model="Model.PagingData" />
+    }
+</div>

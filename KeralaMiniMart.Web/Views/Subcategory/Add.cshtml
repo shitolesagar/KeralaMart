@@ -1,0 +1,85 @@
+﻿@model KeralaMiniMart.Entities.WebViewModels.AddSubcategoryViewModel
+@{
+    ViewData["Title"] = "Add Subcategory";
+    string stringHtml = "<span onclick=\"goToPreviousPage()\"><img src=\"/images/icons/arrow-left.png\" class=\"vertical-middle iconWidth-25 cursor-pointer m-r-20\"></span>";
+    stringHtml = stringHtml + "<span class=\"display-inline\">Add Subcategory</span>";
+    ViewData["TabHeading"] = stringHtml;
+    ViewData["ActiveTab"] = "subcategory";
+}
+<div class="row">
+    <div class="col-md-6 detail-container">
+        <form asp-controller="subcategory" asp-action="add" id="form" autocomplete="off" spellcheck="false" enctype="multipart/form-data">
+            <div class="row my-1">
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <label asp-for="SubcategoryName" class="control-label float-label  mt-3">Subcategory Name</label>
+                        <input type="text" asp-for="SubcategoryName" placeholder="enter subcategory name" class="form-control" maxlength="60" value="" />
+                        <span asp-validation-for="SubcategoryName" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-1">
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <label class="float-label">Select Category</label>
+                        <div class="my-custom-select width-100">
+                            <select class="form-control select-dropDown" asp-for="CategoryId" value="" asp-items="ViewBag.CategoriesList">
+                                <option value="">select</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="detailBtn-group">
+                <button type="button" id="btnSubmit" class="btn btn-primary  mr-2">Add</button>
+                <a asp-controller="subcategory" asp-action="index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        var _URL = window.URL || window.webkitURL;
+        $("#file-input").change(function (e) {
+            var file, img;
+            $("#ImageName-error").text('');
+            if ((file = this.files[0])) {
+                if (file.type === "image/png" || file.type === "image/jpeg" || file.type === "image/jpg") {
+                    if (file.size <= 1000000) {
+                        // only valid block
+                        img = new Image();
+                        img.onload = function () {
+                            $("#tempImg").attr("src", img.src);
+                        };
+                        img.src = _URL.createObjectURL(file);
+                        $("#ImageUrl").val("Dummy Image URL")
+                    }
+                    else {
+                        // size error block
+                        $("#ImageUrl").val("")
+                        $("#ImageName-error").text("Image size should be less than 1 MB.");
+                    }
+                }
+                else {
+                    $("#ImageUrl").val("")
+                    $("#ImageName-error").text('File is not a valid image.');
+                }
+            }
+        });
+        $.validator.setDefaults({
+            ignore: [],
+        });
+
+        $(document).ready(function () {
+            $("#btnSubmit").click(function () {
+                if ($("#form").valid()) {
+                    $("#btnSubmit").prop("disabled", "true")
+                    $("#form").submit();
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,131 @@
+﻿@{
+    ViewData["Title"] = "Products";
+    string stringHtml = "<span class=\"display-inline\">Products</span>";
+    string seachButton = "<input class=\"form-control\" id=\"txtSearch\" type=\"text\" placeholder=\"Search\" /><img src=\"/images/icons/search.png\" class=\"search-icon\" />";
+    string AddButton = string.Format("<span class=\"nav-item\"><a class=\"btn nav-link btn-primary m-r-20 add-icon\" href=\"/product/add\"  ><span class=\"addIcon-txt\">Add New Product</span><img src=\"/images/icons/Plus.png\" /> </a></span>");
+    ViewData["TabButton"] = AddButton;
+    ViewData["TabHeading"] = stringHtml;
+    ViewData["ActiveTab"] = "product";
+    var message = TempData["Message"] ?? string.Empty;
+    ViewData["TabSearch"] = seachButton;
+}
+
+
+<div class="row mb-3" id="filterRow" style="display:none">
+
+    <div class="col-lg-4 col-sm-4">
+        <div class="form-group  position-relative">
+            <span class="f-bold display-inline f-18 dropDownLabel-mob">Category:</span>
+            <div class="my-custom-select">
+                <select onchange="filter(this)" class="form-control select-dropDown" asp-items="ViewBag.CategoryList" id="ddlCategory">
+                    <option value="">select</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-sm-4">
+        <div class="form-group  position-relative">
+            <span class="f-bold display-inline f-18 dropDownLabel-mob">Subcategory:</span>
+            <div class="my-custom-select">
+                <select onchange="filter(this)" class="form-control select-dropDown" id="ddlFilter">
+                    <option value="">select</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-sm-4">
+        <div class="form-group  position-relative">
+            <span class="f-bold display-inline f-18 dropDownLabel-mob">Status:</span>
+            <div class="my-custom-select">
+                <select onchange="filter(this)" class="form-control select-dropDown" id="ddlStatus">
+                    <option value="">select</option>
+                    <option>Published</option>
+                    <option>Unpublished</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@await Component.InvokeAsync("Product", new { isPartial = false, filter = ViewBag.Filters })
+
+<partial name="_deletePopup" />
+
+@section Scripts{
+    <script>
+        var message = "@message";
+        if (message) {
+            ShowSlackbarSucessMessage(message);
+        }
+
+        $(document).ready(function () {
+            $("#ddlCategory").change(function () {
+                $("#ddlFilter").val('');
+                $.get("/Product/GetSubcategoryDropList?categoryId=" + $("#ddlCategory").val(), function (data) {
+                    $("#ddlFilter").empty();
+                    $("#ddlFilter").append("<option value=''>select</option>")
+                    $.each(data, function (index, row) {
+                        $("#ddlFilter").append("<option value='" + row.id + "'>" + row.name + "</option>")
+                    })
+                })
+            });
+
+            $("#txtSearch").keyup(onSearch);
+
+        });
+
+        function onSearch() {
+            $("#ddlCategory").val('');
+            $("#ddlStatus").val('');
+            $("#ddlFilter").val('');
+            ajaxCall(CreateUrlString());
+        }
+
+        function getRecordsByPageIndex(pageIndex) {
+            var url = CreateUrlString() + "pageIndex=" + pageIndex + "&";
+            ajaxCall(url);
+        }
+
+        function CreateUrlString() {
+            var url = "/product/indexpartial?";
+            var filter = {
+                category: $("#ddlCategory").val(),
+                status: $("#ddlStatus").val(),
+                filter: $("#ddlFilter").val(),
+                search: $("#txtSearch").val()
+            };
+            if (filter.category !== "")
+                url = url + "CategoryId=" + encodeURIComponent(filter.category) + "&";
+            if (filter.status !== "")
+                url = url + "PublishStatus=" + encodeURIComponent(filter.status) + "&";
+            if (filter.filter !== "")
+                url = url + "FilterId=" + encodeURIComponent(filter.filter) + "&";
+
+            if (filter.search !== "")
+                url = url + "search=" + encodeURIComponent(filter.search) + "&";
+            return url;
+        }
+
+        function filter(obj) {
+            if (obj.id == 'ddlCategory') {
+                $("#ddlFilter").val('');
+            }
+            ajaxCall(CreateUrlString());
+        }
+
+        function ajaxCall(url) {
+            $(".loader-wrapper").show();
+            $.get(url, function (data) {
+                $(".loader-wrapper").hide();
+                $("#indexPartialContent").replaceWith(data);
+            });
+        }
+
+    // this is called form main method to hide or show filters
+        showHideFilters("filterRow");
+    </script>
+
+}
